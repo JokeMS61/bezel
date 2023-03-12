@@ -69,7 +69,7 @@ class DataController(Basis):
                 dv = v1 - v2
                 dt = t1 - t2
 
-                if dv is not 0:
+                if dv != 0:
                     value = float((dv / dt) * float(factor))
                     logger.debug("new value for identifier %s: %s", identifier, value)
                     self.ds.saveEntry(identifier, value, storetimes[0])
