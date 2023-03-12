@@ -1,0 +1,134 @@
+Keylist 
+K_BACKSPACE        8 , backspace
+K_TAB              9 , tab
+K_CLEAR            12 , clear
+K_RETURN           13 , return
+K_PAUSE            19 , pause
+K_ESCAPE           27 , escape
+K_SPACE            32 , space
+K_EXCLAIM          33 , !
+K_QUOTEDBL         34 , "
+K_HASH             35 , #
+K_DOLLAR           36 , $
+K_AMPERSAND        38 , &
+K_QUOTE            39 , '
+K_LEFTPAREN        40 , (
+K_RIGHTPAREN       41 , )
+K_ASTERISK         42 , *
+K_PLUS             43 , +
+K_COMMA            44 , ,
+K_MINUS            45 , -
+K_PERIOD           46 , .
+K_SLASH            47 , /
+K_0                48 , 0
+K_1                49 , 1
+K_2                50 , 2
+K_3                51 , 3
+K_4                52 , 4
+K_5                53 , 5
+K_6                54 , 6
+K_7                55 , 7
+K_8                56 , 8
+K_9                57 , 9
+K_COLON            58 , :
+K_SEMICOLON        59 , ;
+K_LESS             60 , <
+K_EQUALS           61 , =
+K_GREATER          62 , >
+K_QUESTION         63 , ?
+K_AT               64 , @
+K_LEFTBRACKET      91 , [
+K_BACKSLASH        92 , \
+K_RIGHTBRACKET     93 , ]
+K_CARET            94 , ^
+K_UNDERSCORE       95 , _
+K_BACKQUOTE        96 , `
+K_a                97 , a
+K_b                98 , b
+K_c                99 , c
+K_d                100 , d
+K_e                101 , e
+K_f                102 , f
+K_g                103 , g
+K_h                104 , h
+K_i                105 , i
+K_j                106 , j
+K_k                107 , k
+K_l                108 , l
+K_m                109 , m
+K_n                110 , n
+K_o                111 , o
+K_p                112 , p
+K_q                113 , q
+K_r                114 , r
+K_s                115 , s
+K_t                116 , t
+K_u                117 , u
+K_v                118 , v
+K_w                119 , w
+K_x                120 , x
+K_y                121 , y
+K_z                122 , z
+K_DELETE           127 , delete
+K_KP0              256 , [0]
+K_KP1              257 , [1]
+K_KP2              258 , [2]
+K_KP3              259 , [3]
+K_KP4              260 , [4]
+K_KP5              261 , [5]
+K_KP6              262 , [6]
+K_KP7              263 , [7]
+K_KP8              264 , [8]
+K_KP9              265 , [9]
+K_KP_PERIOD        266 , [.]
+K_KP_DIVIDE        267 , [/]
+K_KP_MULTIPLY      268 , [*]
+K_KP_MINUS         269 , [-]
+K_KP_PLUS          270 , [+]
+K_KP_ENTER         271 , enter
+K_KP_EQUALS        272 , equals
+K_UP               273 , up
+K_DOWN             274 , down
+K_RIGHT            275 , right
+K_LEFT             276 , left
+K_INSERT           277 , insert
+K_HOME             278 , home
+K_END              279 , end
+K_PAGEUP           280 , page up
+K_PAGEDOWN         281 , page down
+K_F1               282 , f1
+K_F2               283 , f2
+K_F3               284 , f3
+K_F4               285 , f4
+K_F5               286 , f5
+K_F6               287 , f6
+K_F7               288 , f7
+K_F8               289 , f8
+K_F9               290 , f9
+K_F10              291 , f10
+K_F11              292 , f11
+K_F12              293 , f12
+K_F13              294 , f13
+K_F14              295 , f14
+K_F15              296 , f15
+K_NUMLOCK          300 , numlock
+K_CAPSLOCK         301 , caps lock
+K_SCROLLOCK        302 , scroll lock
+K_RSHIFT           303 , right shift
+K_LSHIFT           304 , left shift
+K_RCTRL            305 , right ctrl
+K_LCTRL            306 , left ctrl
+K_RALT             307 , right alt
+K_LALT             308 , left alt
+K_RMETA            309 , right meta
+K_LMETA            310 , left meta
+K_LSUPER           311 , left super
+K_RSUPER           312 , right super
+K_MODE             313 , alt gr
+K_HELP             315 , help
+K_PRINT            316 , print screen
+K_SYSREQ           317 , sys req
+K_BREAK            318 , break
+K_MENU             319 , menu
+K_POWER            320 , power
+K_EURO             321 , euro
