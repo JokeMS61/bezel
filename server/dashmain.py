@@ -30,7 +30,7 @@ class dashmain():
         self.pingsymbol = False
         self.identifier = []
         # im default 25 Millisekunden maximale Ausfuehrungszeit
-        self.process = 25000
+        self.process = MAX_PROCESSTIME
         self.screen = None
 
         pygame.init()
@@ -197,7 +197,7 @@ class dashmain():
         #pygame.mixer.set_reserved(1)
         self.soundonchannel = pygame.mixer.Channel(0)
         if self.pingfile != None:
-            self.pingtime = long(micros())
+            self.pingtime = micros()
             self.soundon = pygame.mixer.Sound(g_sounds + self.pingfile)
             self.soundonchannel.play(self.soundon,loops=0)
             self.pingsymbol = True

@@ -7,7 +7,7 @@ import sys
 from messagehelper import *
 from settings import *
 from timing import delay
-
+from tools import *
 
 class NetworkServer(threading.Thread):
 
@@ -33,7 +33,7 @@ class NetworkServer(threading.Thread):
 
     def establishserver(self,port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ("localhost", port)
+        server_address = ("", port)
         logger.info('starting up on %s port %s' % server_address)
         self.sock.bind(server_address)
         self.servername = socket.gethostname()
@@ -48,7 +48,6 @@ class NetworkServer(threading.Thread):
         while self.running:
             waitinfo = 'waiting for connection'
             logger.info(waitinfo)
-            logger.info(waitinfo)
             (self.connection, client_address) = self.sock.accept()
             self.clientaddress = str(client_address[0])
             self.clientport = str(client_address[1])
@@ -56,7 +55,7 @@ class NetworkServer(threading.Thread):
             logger.info(connectinfo)
             self.clientstring(connectinfo)
             logger.info('client connected: %s', client_address)
-            self.clientconnected = True
+            self.connectclient = True
 
             try:
                 while self.running and self.connectclient:
@@ -72,7 +71,7 @@ class NetworkServer(threading.Thread):
                                 self.connectclient = False
                             self.sendmessages(messages)
                     else:
-                        self.running = False
+                        self.running = True
                         self.connectclient = False
 
                 logger.debug("innerwhile verlassen")
@@ -139,11 +138,17 @@ class NetworkServer(threading.Thread):
             # deswegen beenden weiter ueber den Netwerkcontroller
             # und dessen destroy methode
         else:
-            message = '@' + id + str(value) + '#'
-            if self.clientconnected is True:
+            logger.debug("id: %s value: %s", id,value)
+            if self.connectclient is True:
+                logger.debug("clientconnected = True")
                 try:
-                    rc = self.connection.sendall(message.encode("utf-8"))
-                    logger.debug("message: %s rc: %s",message, rc )
+                    message = formatMessageContent(id,value)
+                    logger.debug("message: %s", message)
+                    if message != None:
+                        rc = self.connection.sendall(message)
+                        logger.debug("message: %s rc: %s",message, rc )
+                    else:
+                        logger.error("invalid message")
                 except:
                     logger.debug("socket error")
                 finally:

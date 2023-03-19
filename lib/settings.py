@@ -118,6 +118,7 @@ ID_FRAMERATE    = 'FRT'
 ID_GAS          = 'GAS'
 ID_HIGHBEAM     = 'HBM'
 ID_INNERDASH    = 'IDS'
+ID_KILLME       = 'KME'
 ID_LOWBEAM      = 'LBM'
 ID_LOGENTRY     = 'LEY'
 ID_LOGLEVEL     = 'LLL'
@@ -189,6 +190,7 @@ idlist = {
           ID_SERVERNAME:LBL_APP,
           ID_SERVERPORT:LBL_APP,
           ID_FRAMERATE:LBL_APP,
+          ID_KILLME:LBL_APP,
           ID_LOGLEVEL:LBL_APP
          }
 
@@ -207,3 +209,11 @@ valuelist = [ID_FALSE,
 
 TYPE_POINTER = 'P'
 TYPE_TEXT = 'T'
+
+Message_Prefix = "@"
+Message_Postfix = "#"
+Message_Length = 13
+Message_FillChar = "_"
+Message_ValueLength = 20
+Message_IDLength = 3
+MAX_PROCESSTIME = 25000

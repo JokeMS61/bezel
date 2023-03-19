@@ -72,7 +72,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -1285,6 +1285,9 @@
        <property name="text">
         <string>Info</string>
        </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
       </widget>
       <widget class="QRadioButton" name="rbn_loglevel_debug">
        <property name="geometry">
@@ -1297,6 +1300,9 @@
        </property>
        <property name="text">
         <string>Debug</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QRadioButton" name="rbn_loglevel_critical">
@@ -1325,7 +1331,7 @@
         <string>not set</string>
        </property>
        <property name="checked">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
@@ -1608,7 +1614,7 @@
       <rect>
        <x>10</x>
        <y>90</y>
-       <width>71</width>
+       <width>91</width>
        <height>16</height>
       </rect>
      </property>
@@ -1647,7 +1653,7 @@
       <rect>
        <x>110</x>
        <y>110</y>
-       <width>46</width>
+       <width>111</width>
        <height>16</height>
       </rect>
      </property>
@@ -1673,7 +1679,7 @@
       <rect>
        <x>110</x>
        <y>130</y>
-       <width>46</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>

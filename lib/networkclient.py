@@ -2,21 +2,14 @@ __author__ = 'JK'
 import socket
 from settings import *
 
-class NetworkClient():
-    def __init__(self,hostname="localhost", adress=10000, broadcast=False):
 
-        self.broadcast = broadcast
+class NetworkClient():
+    def __init__(self,hostname="localhost", adress=10000):
         self.port = adress
 
-        if self.broadcast:
-            # open UDP Socket
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, True)
-            self.sock.settimeout(5)
-        else:
-            # Create a TCP/IP socket
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.server_address = (hostname,adress)
+        # Create a TCP/IP socket
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_address = (hostname,adress)
 
 
     def connectSocket(self):
@@ -39,41 +32,33 @@ class NetworkClient():
             #pygame.time.wait(1000)
         logger.info("reconnected")
 
+    def setBlocking(self,flag=False):
+        self.sock.setblocking(flag)
 
     def stop(self):
         self.sock.close()
 
     def receive(self):
-        data = self.sock.recv(512)
-        print ('received "%s"' % data)
+        try:
+            data = self.sock.recv(1024)
+            print ('received "%s"' % data)
+        except ConnectionResetError:
+            return None
+        finally:
+            pass
+
         return data
 
     def send(self, message, receive):
-        if self.broadcast:
-            try:
-                self.sock.sendto("PING=0", ("<broadcast>", self.port))
-                try:
-                    print("Response: %s" % self.sock.recv(1024))
-                except socket.timeout:
-                    print( "No server found")
-            except:
-                return 1
-            finally:
-                return 0
-        else:
-            try:
-                message = "@" + message + "#"
-                logger.debug('sending "%s"' % message)
+        try:
+            self.sock.sendall(message)
+            if receive:
+                data = self.sock.recv(1024, "utf-8")
+                #print ('received "%s"' % data)
+                return data
+        except:
+            return None
 
-                #self.sock.sendall(bytes(message + "\n", "utf-8"))
-                self.sock.sendall(message.encode("utf-8"))
-                if receive:
-                    data = self.sock.recv(1024, "utf-8")
-                    print ('received "%s"' % data)
-                    return data
-            except:
-                return 1
-
-            finally:
-                return 0
+        finally:
+            return 0
 
