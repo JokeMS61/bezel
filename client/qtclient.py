@@ -1,5 +1,7 @@
 __author__ = 'JK'
 
+from PyQt5.QtWidgets import QApplication
+
 from networkclient import NetworkClient
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import uic
@@ -20,12 +22,13 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi("dashtest.ui", self)
         #self.setupUi(self)
         self.nc = NetworkClient()
-        self.connectionestablished = 0
+        self.connectionestablished = False
         self.sendspeedimpuls = True
         self.speedimpulsintervall = 500
         self.sim_repeat = False
         self.speed_value = 0
-        self.running = True
+        self.ProcessServerRunning = True
+        self.IntervallServerRunning = True
         self.attempt2connect = False
         self.id1 = None
         self.id2 = None
@@ -125,16 +128,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.setLogLevel(LOGLEVEL_NOTSET)
 
         # Hostadress abfragen:
-        self.sendMessage(ID_SERVERNAME)
-        self.sendMessage(ID_SERVERADR)
-        self.sendMessage(ID_SERVERPORT)
-        self.sendMessage(ID_CLIENTADR)
-        self.sendMessage(ID_CLIENTPORT)
+        self.sendMessage(ID_SERVERNAME,'')
+        self.sendMessage(ID_SERVERADR,'')
+        self.sendMessage(ID_SERVERPORT,'')
+        self.sendMessage(ID_CLIENTADR,'')
+        self.sendMessage(ID_CLIENTPORT,'')
+        self.sendMessage(ID_LOGLEVEL,'')
+        self.sendMessage(ID_FRAMERATE,'')
 
     def command(self):
         id = str(self.inp_commandid.text())
         value =str(self.inp_commandvalue.text())
         self.sendMessage(id, value)
+
     def simrepeat(self):
         while self.sim_repeat == True:
             self.playfile()
@@ -211,6 +217,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def sendValue(self, valueobject, txtobject, identifier):
         value = valueobject.value()
         txtobject.setText(str(value))
+        logger.debug("ID: %s , sendValue: %s ", identifier, value)
         self.sendMessage(identifier, value)
 
     def changegauge(self):
@@ -224,52 +231,91 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sendMessage(ID_QUIT,False)
 
     def startIntervallServer(self):
+        self.IntervallServerRunning = True
         self.id1 = Thread(target=self.sendintervallspeed)
         self.id1.start()
         logger.debug("run intervall server. id=%s",self.id1)
 
+    def stopIntervallServer(self):
+        self.sendspeedimpuls = False
+        logger.info("sendspeedimpuls = False")
+        self.IntervallServerRunning = False
+        logger.info("IntervallServerRunning = False")
+
+
+        # Intervallserver
+        wait = 2 * self.speedimpulsintervall
+        pygame.time.wait(wait)
+        logger.info("wait %s milliseconds",wait)
+        if self.id1 == None:
+            logger.info("Intervallserver stopped")
+        else:
+            logger.info("Intervallserver not stopped")
+
+    def stopProcessServer(self):
+
+        self.sendMessage("KME",'')
+        pygame.time.wait(500)
+        if self.id3 == None:
+            logger.info("Processserver stopped")
+        else:
+            logger.info("Processserver not stopped")
+
+
     def exit(self):
+        self.stopIntervallServer()
+        self.stopProcessServer()
+
+        # Status zurücksetzen
         self.attempt2connect = False
-        self.running = False
+        logger.info("attempt2connect False")
+
         self.sim_repeat = False
+        logger.info("sim_repeat False")
 
-        while self.id1 is not None and self.id2 is not None and self.id3 is not None:
-            pass
+        logger.info("attempt 2 stop networkclient")
+        self.nc.stop()
+        logger.info("networkclient stopped")
 
-        app.quit()
+        self.connectionestablished = False
+        logger.info("connectionestablished False")
+
+        self.close()
 
     def receiveMessages(self):
-        if self.connectionestablished == 1:
+        if self.connectionestablished == True:
             rawvalue = self.nc.receive()
-            value = rawvalue.decode("utf-8")
-            logger.debug("len(value) = %s", len(value))
-            if len(value) == 0:
-                self.connectionestablished = 0
-                return None
-            messages = self.mh.getallMessages(value)
-            if messages is not None:
-                return messages
+            if rawvalue != None:
+                value = rawvalue.decode("utf-8")
+                logger.debug("len(value) = %s", len(value))
+                if len(value) == 0:
+                    self.connectionestablished = False
+                    return None
+                messages = self.mh.getallMessages(value)
+                if messages is not None:
+                    return messages
+            else:
+                self.connectionestablished = False
 
+    def sendMessage(self, id, value='', receive=False):
+        if self.connectionestablished == True:
 
-    def sendMessage(self, id, value='', receive=True):
-        if self.connectionestablished == 1:
-#            message = id + "=" + str(value)
-            message = id + str(value)
-            value = self.nc.send(message, receive)
-            #logger.debug("send message: %s ", message)
+            message = formatMessageContent(id,value)
+            if message != None:
+                rc = self.nc.send(message, receive)
 
-            time = micros() - self.startingTime
-            timeentry = getTimeKey(time)
-            listentry = timeentry + ' | ' + str(value) + ' | ' + message
-            self.commandlist.insertItem(0,listentry)
-            self.message.setText("last command: <" + message + "> result=" + str(value))
+                if rc != None:
+                    time = micros() - self.startingTime
+                    timeentry = getTimeKey(time)
+                    listentry = timeentry + ' | ' + str(value) + ' | ' + str(message)
+                    self.commandlist.insertItem(0,listentry)
+                    self.message.setText("last command: <" + str(message) + "> result=" + str(rc))
+                else:
+                    logger.warning("Exception occurs. attempt to reset")
 
-            if value == 1:
-                logger.warning("connection lost. attempt to reset")
-                self.message.setText("connection lost.")
-                self.resetConnection()
-
-            return value
+                return value
+            else:
+                logger.error("Message Format error")
         else:
             self.message.setText("no connection. Please connect first")
 
@@ -279,15 +325,18 @@ class MainWindow(QtWidgets.QMainWindow):
         #self.id2.start()
         self.establishConnection()
 
+
     def startProcessServer(self):
         self.id3 = Thread(target=self.processServerData)
         self.id3.start()
         logger.debug("run process server. id=%s", self.id3)
 
     def processServerData(self):
-        while self.running == True:
-            if self.connectionestablished == 1:
+        while self.ProcessServerRunning == True:
+            if self.connectionestablished == True:
+                logger.debug("call receiveMessage")
                 messages = self.receiveMessages()
+                logger.debug("return from receiveMessages")
                 if messages:
                     logger.debug ("message received: %s", messages)
                     for x in range(0,len(messages)):
@@ -295,6 +344,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         value = messages[x][1]
                         if  id == ID_QUIT:
                             pass
+                        elif id == ID_KILLME:
+                            self.ProcessServerRunning = False
                         elif id == ID_FRAMERATE:
                             self.lbl_fps.setText(value)
                         elif id == ID_LOGLEVEL:
@@ -329,7 +380,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nc.stop()
         self.nc = None
         self.nc = NetworkClient()
-        self.connectionestablished = 0
+        self.connectionestablished = False
         self.attempt2connect = False
         self.connectServer()
 
@@ -342,7 +393,7 @@ class MainWindow(QtWidgets.QMainWindow):
             message = initial_message
             dot = ". "
 
-            if self.connectionestablished == 0:
+            if self.connectionestablished == False:
                 self.attempt2connect = True
 
                 while ((rc != 0) and (self.attempt2connect == True)):
@@ -359,12 +410,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
             self.attempt2connect = False
             if rc == 0:
-                self.connectionestablished = 1
+                self.connectionestablished = True
                 logger.debug("connection established")
                 self.message.setText("connection established")
                 self.initialize()
             else:
-                self.connectionestablished = 0
+                self.connectionestablished = False
                 self.message.setText("connection error " + str(rc))
                 self.resetConnection()
 
@@ -394,12 +445,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def sendintervallspeed(self):
         waittime = self.speedimpulsintervall
 
-        while self.running == True:
+        while self.IntervallServerRunning == True:
             pygame.time.wait(waittime)
-            if self.connectionestablished == 1:
+            if self.connectionestablished == True:
+
                 if self.sendspeedimpuls == True:
+                    self.sendMessage(ID_FRAMERATE, '')
                     if self.speed_value > 0:
-                        self.sendMessage(ID_SPEED, self.speed_value)
+                        self.sendMessage(ID_SPEED, self.speed_value, False)
 
         self.id1 = None
         logger.debug("quit intervall server.")
@@ -424,12 +477,15 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.sim_repeat = False
 
+    def closeEvent(self, event):
+        app.quit()
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication([])
+    #app = QtWidgets.QApplication(sys.argv)'
     form = MainWindow()
     form.show()
-    app.exec_()
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ from collections import deque
 from timing import *
 from processdata import *
 from messagehelper import *
+from tools import *
 
 class NetworkController(object):
 
@@ -133,6 +134,7 @@ class NetworkController(object):
         cslot6 = self.getSlotEntries(6)
 
         if abbruch == True:
+            # Dauert die Verarbeitung zu lange, wird diese abgebrochen...
             logger.debug("end processing: <ABORT!> s1:%s s2:%s s3:%s s4:%s s5:%s s6:%s ",cslot1,cslot2,cslot3,cslot4,cslot5,cslot6)
         else:
             logger.debug("end processing: s1:%s s2:%s s3:%s s4:%s s5:%s s6:%s ",cslot1,cslot2,cslot3,cslot4,cslot5,cslot6)
@@ -198,14 +200,17 @@ class NetworkController(object):
                     port = self.ns.getClientPort()
                     self.processcontroller.setValue(ID_CLIENTPORT, port)
                     logger.debug("set processcontroller with: %s%s", ID_SERVERPORT, port)
-#                if identifier == ID_FRAMERATE:
-#                    fps = self.dash.getfps()
-#                    self.processcontroller.setValue(ID_FRAMERATE, fps)
-#                    logger.debug("set processcontroller with: %s%s", ID_FRAMERATE, fps)
-#                if identifier == ID_LOGLEVEL:
-#                    level = self.dash.getloglevel()
-#                    self.processcontroller.setValue(ID_LOGLEVEL, level)
-#                    logger.debug("set processcontroller with: %s%s", ID_LOGLEVEL, level)
+                if identifier == ID_FRAMERATE:
+                    fps = self.dash.getfps()
+                    self.processcontroller.setValue(ID_FRAMERATE, fps)
+                    logger.debug("set processcontroller with: %s%s", ID_FRAMERATE, fps)
+                if identifier == ID_KILLME:
+                    self.processcontroller.setValue(ID_KILLME, True)
+                    logger.debug("set processcontroller with: %s%s", ID_KILLME, True)
+                if identifier == ID_LOGLEVEL:
+                    level = self.dash.getloglevel()
+                    self.processcontroller.setValue(ID_LOGLEVEL, level)
+                    logger.debug("set processcontroller with: %s%s", ID_LOGLEVEL, level)
 
         else:
             logger.error("register datapublisher")
@@ -220,7 +225,12 @@ class NetworkController(object):
         time.sleep(1)
 
         logger.debug("sending NetworkServer quit")
-        nsc.send(ID_QUIT,False)
+        message = formatMessageContent(ID_QUIT,"")
+        if message != None:
+            nsc.send(message,receive="")
+        else:
+            logger.error ("Quit Message invalid")
+
         nsc.stop()
 
 

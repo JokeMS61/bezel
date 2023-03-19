@@ -1,7 +1,8 @@
 
 from networkclient import NetworkClient
+from tools import *
 import time
-import settings
+
 
 class TestClient():
     def __init__(self, parent=None):
@@ -10,10 +11,13 @@ class TestClient():
     def connect(self):
         self.nc.connectServer()
 
-    def send(self,message):
+    def send(self,id, value):
         receive = ""
-        self.nc.send(message, receive)
-        print("receive: %s", receive)
+        message = formatMessageContent(id,value)
+
+        if message != None:
+            self.nc.send(message, receive)
+            print("receive: %s", receive)
 
     def stop(self):
         self.nc.stop()
@@ -21,11 +25,11 @@ class TestClient():
 def main():
     tc = TestClient()
     tc.connect()
-    tc.send("SPD10")
+    tc.send("SPD","10")
     time.sleep(0.5)
-    tc.send("SPD12")
+    tc.send("SPD","12")
     time.sleep(0.5)
-    tc.send("SPD14")
+    tc.send("SPD","14")
     tc.stop()
 
 if __name__ == '__main__':

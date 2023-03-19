@@ -1,6 +1,5 @@
 __author__ = 'JK'
-
-#import settings
+from settings import *
 
 def toBoolean( val ):
     """
@@ -18,6 +17,26 @@ def toBoolean( val ):
     falseItems = ["false", "f", "no", "n", "none", "0", "[]", "{}", "" ]
 
     return not str( val ).strip().lower() in falseItems
+
+def formatMessageContent(id, value):
+    val = str(value)
+
+    if val != None:
+        if len(val) > Message_ValueLength:
+            logger.error("Value in Message too long: %s", val)
+            return None
+        else:
+            val.rjust(Message_ValueLength,Message_FillChar)
+
+        if len(id) > Message_IDLength:
+            logger.error("ID in Message too long: %s", id)
+            return None
+        else:
+            id.rjust(Message_IDLength,Message_FillChar)
+        rc = Message_Prefix + id + val + Message_Postfix
+        return rc.encode("UTF-8")
+    else:
+        logger.error("vo valid value (id = %s)", id)
 
 def getTimeKey( diff ):
     # die funktion macht aus einem Wert "microsekunden"
