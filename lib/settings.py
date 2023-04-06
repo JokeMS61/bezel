@@ -1,5 +1,16 @@
 __author__ = 'JK'
 
+# 1. make these parameter configure
+# in main.cfg
+# Message_Prefix = "@"
+# Message_Postfix = "#"
+# Message_Length = 13
+# Message_FillChar = "_"
+# Message_ValueLength = 20
+# Message_IDLength = 3
+# MAX_PROCESSTIME = 25000
+
+
 import logging
 
 #global logger
@@ -183,7 +194,6 @@ processids = [
 
 idlist = {
           ID_QUIT:LBL_APP,
-          ID_LOGLEVEL:LBL_APP,
           ID_PING:LBL_APP,
           ID_DASH:LBL_APP,
           ID_SERVERADR:LBL_APP,

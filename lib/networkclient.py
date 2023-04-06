@@ -2,6 +2,11 @@ __author__ = 'JK'
 import socket
 from settings import *
 
+# following task are to do:
+# 1. connection must be more reliable
+# 2. use selectors
+# 3. implement multi-connections
+# look here: https://realpython.com/python-sockets/
 
 class NetworkClient():
     def __init__(self,hostname="localhost", adress=10000):

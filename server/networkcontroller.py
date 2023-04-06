@@ -10,6 +10,12 @@ from processdata import *
 from messagehelper import *
 from tools import *
 
+# following task are to do:
+# 1. make network more reliable !
+# 2. configure self.processduration and other parameters
+
+
+
 class NetworkController(object):
 
     def __init__(self, dash):

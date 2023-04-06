@@ -1,6 +1,15 @@
 __author__ = 'JK'
 from settings import *
 
+# 1. make these parameter configure
+# Message_Prefix = "@"
+# Message_Postfix = "#"
+# Message_Length = 13
+# Message_FillChar = "_"
+# Message_ValueLength = 20
+# Message_IDLength = 3
+# MAX_PROCESSTIME = 25000
+
 def toBoolean( val ):
     """
     Get the boolean value of the provided input.

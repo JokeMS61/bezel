@@ -8,6 +8,10 @@ from boardconfiguration import boardConfiguration
 from timing import *
 from processdata import *
 
+# following task are to do:
+# 1. better position of debug-messages
+# ...
+
 class dashmain():
     def __init__(self):
         #logger.debug('dashmain constructor')
