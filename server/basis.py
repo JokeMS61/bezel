@@ -19,7 +19,7 @@ class Basis(object):
         configfile = g_configuration + file + ".cfg"
         logger.debug("load configuration %s", configfile)
 
-        cfgfile = codecs.open(configfile, "rU", encoding='utf-8')
+        cfgfile = codecs.open(configfile, "r", encoding='utf-8')
         # read content to the file
         config = configparser.ConfigParser()
 
