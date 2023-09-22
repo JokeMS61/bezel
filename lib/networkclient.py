@@ -2,19 +2,21 @@ __author__ = 'JK'
 import socket
 from settings import *
 
-# following task are to do:
-# 1. connection must be more reliable
-# 2. use selectors
-# 3. implement multi-connections
-# look here: https://realpython.com/python-sockets/
-
 class NetworkClient():
-    def __init__(self,hostname="localhost", adress=10000):
+    def __init__(self,hostname="localhost", adress=10000, broadcast=False):
+
+        self.broadcast = broadcast
         self.port = adress
 
-        # Create a TCP/IP socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_address = (hostname,adress)
+        if self.broadcast:
+            # open UDP Socket
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, True)
+            self.sock.settimeout(5)
+        else:
+            # Create a TCP/IP socket
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_address = (hostname,adress)
 
 
     def connectSocket(self):
@@ -37,8 +39,6 @@ class NetworkClient():
             #pygame.time.wait(1000)
         logger.info("reconnected")
 
-    def setBlocking(self,flag=False):
-        self.sock.setblocking(flag)
 
     def stop(self):
         self.sock.close()
