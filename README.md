@@ -31,8 +31,14 @@
 <br>
 I'm using the Pycharm IDE for development. So, install pycharm local.
 The Community Edition is free for use in non commercial environments.
+
+The Application is tested with the following Versions:<br>
+Python 3.7.1<br>
+numpy 1.20.0<br>
+pygame 2.2.0<br>
+
 After installing Pycham, install Python, git, numpy, pyqt5 and pygame from the
-pycham ide under "File/New project setup/Settings for new Projects.
+pycham ide with the Package Explorer.
 
 Edit under "Run/Edit Configurations/
 set the main.py under ./server as executable.

@@ -1,6 +1,9 @@
-from PyQt5.QtWidgets import QApplication,QLabel
+import sys
+from PyQt5 import QtWidgets, QtCore
 
-app = QApplication([])
-label = QLabel('Hello World')
-label.show();
-app.exec();
+app = QtWidgets.QApplication(sys.argv)
+widget = QtWidgets.QWidget()
+widget.resize(400, 200)
+widget.setWindowTitle("This is PyQt Widget example")
+widget.show()
+exit(app.exec_()) 
